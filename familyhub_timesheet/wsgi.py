@@ -12,7 +12,7 @@ from django.core.wsgi import get_wsgi_application
 
 # Set the settings module based on environment
 if os.getenv('DJANGO_ENVIRONMENT') == 'production':
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'familyhub_timesheet.settings.production')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'familyhub_timesheet.settings.test')
 else:
     os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'familyhub_timesheet.settings')
 

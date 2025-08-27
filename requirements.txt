@@ -1,10 +1,6 @@
 # Django and core dependencies
 Django>=5.0,<6.0
 
-# Database drivers
-mssql-django>=1.4
-pyodbc>=4.0.39
-
 # Production server
 gunicorn>=21.0.0
 
@@ -13,11 +9,6 @@ whitenoise>=6.5.0
 
 # Configuration management
 python-decouple>=3.8
-django-environ>=0.10.0
 
 # Security and utilities
 django-cors-headers>=4.3.0
-django-extensions>=3.2.0
-
-# Development and debugging (optional, can be removed in production)
-django-debug-toolbar>=4.2.0
