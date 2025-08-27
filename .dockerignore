@@ -1,0 +1,76 @@
+# Git files
+.git
+.gitignore
+
+# Documentation
+README.md
+DEPLOYMENT.md
+*.md
+
+# Local environment files
+.env
+.env.local
+.env.production
+
+# Python cache
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+.Python
+
+# Virtual environment
+.venv
+venv/
+env/
+
+# Development database
+db.sqlite3
+db.sqlite3-journal
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+logs/
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+
+# Testing
+.pytest_cache/
+.tox/
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Static files (will be collected in container)
+staticfiles/
+mediafiles/
+
+# Backup files
+*.bak
+backup_*
+
+# Docker files (except Dockerfile)
+docker-compose.override.yml
+.dockerignore
+
+# Scripts (they're copied but not needed in final image)
+deploy.sh
+manage_production.sh
+deploy.ps1
+manage_production.ps1
