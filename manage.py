@@ -6,7 +6,13 @@ import sys
 
 def main():
     """Run administrative tasks."""
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'familyhub_timesheet.settings')
+    # Detect environment and set appropriate settings
+    if os.getenv('DJANGO_ENVIRONMENT') == 'production':
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'familyhub_timesheet.settings.production')
+    else:
+        # Default to base settings for development
+        os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'familyhub_timesheet.settings')
+    
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

@@ -8,9 +8,12 @@ https://docs.djangoproject.com/en/5.2/howto/deployment/wsgi/
 """
 
 import os
-
 from django.core.wsgi import get_wsgi_application
 
-os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'familyhub_timesheet.settings')
+# Set the settings module based on environment
+if os.getenv('DJANGO_ENVIRONMENT') == 'production':
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'familyhub_timesheet.settings.production')
+else:
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'familyhub_timesheet.settings')
 
 application = get_wsgi_application()
