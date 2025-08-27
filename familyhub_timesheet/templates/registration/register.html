@@ -1,6 +1,6 @@
 {% extends 'base.html' %}
 
-{% block title %}Login - FamilyHub Timesheet{% endblock %}
+{% block title %}Register - FamilyHub Timesheet{% endblock %}
 
 {% block content %}
 <div class="row justify-content-center">
@@ -8,32 +8,25 @@
         <div class="card">
             <div class="card-header text-center">
                 <h3 class="card-title mb-0">
-                    <i class="bi bi-person-check"></i> Sign In
+                    <i class="bi bi-person-plus"></i> Create Account
                 </h3>
             </div>
             <div class="card-body">
-                {% if form.errors %}
-                    <div class="alert alert-danger" role="alert">
-                        <i class="bi bi-exclamation-triangle"></i>
-                        Invalid login credentials. Please try again.
-                    </div>
-                {% endif %}
-                
                 <form method="post">
                     {% csrf_token %}
                     {{ form.as_p }}
                     
                     <div class="d-grid">
                         <button type="submit" class="btn btn-primary btn-lg">
-                            <i class="bi bi-box-arrow-in-right"></i> Sign In
+                            <i class="bi bi-check-circle"></i> Create Account
                         </button>
                     </div>
                 </form>
             </div>
             <div class="card-footer text-center">
                 <p class="mb-0">
-                    Don't have an account? 
-                    <a href="{% url 'register' %}" class="text-decoration-none">Create one here</a>
+                    Already have an account? 
+                    <a href="{% url 'login' %}" class="text-decoration-none">Sign in here</a>
                 </p>
             </div>
         </div>

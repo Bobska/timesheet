@@ -1,21 +1,96 @@
 {% extends 'base.html' %}
+
+{% block title %}Jobs - FamilyHub Timesheet{% endblock %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+    <li class="breadcrumb-item active">Jobs</li>
+  </ol>
+</nav>
+{% endblock %}
+
 {% block content %}
-<h2>Jobs</h2>
-<a href="{% url 'job_create' %}" class="btn btn-success mb-3">Add Job</a>
-<table class="table table-striped">
-  <thead><tr><th>Name</th><th>Address</th><th>Actions</th></tr></thead>
-  <tbody>
-    {% for job in jobs %}
-      <tr>
-        <td>{{ job.name }}</td>
-        <td>{{ job.address }}</td>
-        <td>
-          <a href="{% url 'job_edit' job.pk %}" class="btn btn-sm btn-primary">Edit</a>
-        </td>
-      </tr>
-    {% empty %}
-      <tr><td colspan="3">No jobs found.</td></tr>
-    {% endfor %}
-  </tbody>
-</table>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2">Manage Jobs</h1>
+    <div>
+        <a href="{% url 'job_create' %}" class="btn btn-success">
+            <i class="bi bi-plus-circle"></i> Add New Job
+        </a>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Your Jobs</h5>
+            </div>
+            <div class="card-body">
+                {% if jobs %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Job Name</th>
+                                    <th>Address</th>
+                                    <th>Total Hours</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for job in jobs %}
+                                <tr>
+                                    <td>
+                                        <strong>{{ job.name }}</strong>
+                                        <br>
+                                        <small class="text-muted">{{ job.display_name }}</small>
+                                    </td>
+                                    <td>{{ job.address|default:"No address" }}</td>
+                                    <td>
+                                        <span class="badge bg-info">
+                                            {{ job.total_hours }} hours
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <div class="btn-group" role="group">
+                                            <a href="{% url 'job_edit' job.pk %}" class="btn btn-sm btn-primary">
+                                                <i class="bi bi-pencil"></i> Edit
+                                            </a>
+                                            <a href="{% url 'daily_entry' %}?job={{ job.pk }}" class="btn btn-sm btn-success">
+                                                <i class="bi bi-plus"></i> Add Entry
+                                            </a>
+                                        </div>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                {% else %}
+                    <div class="text-center py-4">
+                        <i class="bi bi-briefcase display-1 text-muted"></i>
+                        <h4 class="text-muted mt-3">No Jobs Yet</h4>
+                        <p class="text-muted">Create your first job to start tracking time.</p>
+                        <a href="{% url 'job_create' %}" class="btn btn-success btn-lg">
+                            <i class="bi bi-plus-circle"></i> Create Your First Job
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+{% if jobs %}
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="alert alert-info" role="alert">
+            <strong>Quick Tip:</strong> 
+            Jobs help organize your time entries. Create separate jobs for different clients or projects to better track your work.
+        </div>
+    </div>
+</div>
+{% endif %}
 {% endblock %}

@@ -1,18 +1,116 @@
 {% extends 'base.html' %}
+
+{% block title %}Weekly Summary - FamilyHub Timesheet{% endblock %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+    <li class="breadcrumb-item active">Weekly Summary</li>
+  </ol>
+</nav>
+{% endblock %}
+
 {% block content %}
-<h2>Weekly Summary</h2>
-<table class="table table-bordered">
-  <thead><tr><th>Date</th><th>Total Hours</th></tr></thead>
-  <tbody>
-    {% for d in week_dates %}
-      <tr>
-        <td>{{ d }}</td>
-        <td>{{ daily_totals[d] }}</td>
-      </tr>
-    {% endfor %}
-  </tbody>
-</table>
-<div class="card card-body mb-3">
-  <h4>Weekly Total: {{ weekly_total }} hours</h4>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h1 class="h2">Weekly Summary</h1>
+    <div>
+        <a href="{% url 'daily_entry' %}" class="btn btn-primary">
+            <i class="bi bi-plus-circle"></i> Add Entry
+        </a>
+    </div>
+</div>
+
+<div class="row mb-4">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header bg-success text-white">
+                <h5 class="card-title mb-0">
+                    <i class="bi bi-calendar-week"></i> Week at a Glance
+                </h5>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <div class="col-md-4">
+                        <h3 class="text-success">{{ weekly_total }}</h3>
+                        <p class="text-muted mb-0">Total Hours</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h3 class="text-info">{{ week_dates|length }}</h3>
+                        <p class="text-muted mb-0">Days Tracked</p>
+                    </div>
+                    <div class="col-md-4">
+                        <h3 class="text-warning">
+                            {% if weekly_total %}
+                                {{ weekly_total|floatformat:1|default:"0" }}
+                            {% else %}
+                                0
+                            {% endif %}
+                        </h3>
+                        <p class="text-muted mb-0">Avg. Hours/Day</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-header">
+                <h5 class="card-title mb-0">Daily Breakdown</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Date</th>
+                                <th>Day</th>
+                                <th>Total Hours</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for d in week_dates %}
+                            <tr>
+                                <td>{{ d }}</td>
+                                <td>{{ d|date:"l" }}</td>
+                                <td>
+                                    <span class="badge bg-primary">
+                                        {{ daily_totals|default_if_none:"0" }} hours
+                                    </span>
+                                </td>
+                                <td>
+                                    {% if daily_totals %}
+                                        {% if daily_totals >= 8 %}
+                                            <span class="badge bg-success">Full Day</span>
+                                        {% elif daily_totals >= 4 %}
+                                            <span class="badge bg-warning">Partial Day</span>
+                                        {% else %}
+                                            <span class="badge bg-secondary">Few Hours</span>
+                                        {% endif %}
+                                    {% else %}
+                                        <span class="badge bg-light text-dark">No Entries</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="row mt-4">
+    <div class="col-12">
+        <div class="alert alert-info" role="alert">
+            <strong>Need more detail?</strong> 
+            Use the <a href="{% url 'daily_entry' %}" class="alert-link">Daily Entry</a> page to view and edit specific time entries for any day.
+        </div>
+    </div>
 </div>
 {% endblock %}

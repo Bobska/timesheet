@@ -3,25 +3,84 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>FamilyHub Timesheet</title>
-    <!-- Bootstrap 5 CDN -->
+    <title>{% block title %}FamilyHub Timesheet{% endblock %}</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <meta name="description" content="Track work hours and jobs with FamilyHub Timesheet">
 </head>
 <body>
-<nav class="navbar navbar-expand-lg navbar-light bg-light mb-4">
-  <div class="container-fluid">
-    <a class="navbar-brand" href="#">FamilyHub Timesheet</a>
-    <div class="d-flex">
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+  <div class="container">
+    <a class="navbar-brand fw-bold" href="{% url 'dashboard' %}">
+      <i class="bi bi-clock-history me-2"></i>FamilyHub Timesheet
+    </a>
+    
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    
+    <div class="collapse navbar-collapse" id="navbarNav">
       {% if user.is_authenticated %}
-        <span class="navbar-text me-2">Hello, {{ user.username }}!</span>
-        <a class="btn btn-outline-secondary" href="{% url 'logout' %}">Logout</a>
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'dashboard' %}active{% endif %}" href="{% url 'dashboard' %}">
+              Dashboard
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'daily_entry' %}active{% endif %}" href="{% url 'daily_entry' %}">
+              Daily Entry
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'weekly_summary' %}active{% endif %}" href="{% url 'weekly_summary' %}">
+              Weekly Summary
+            </a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link {% if request.resolver_match.url_name == 'job_list' or request.resolver_match.url_name == 'job_create' or request.resolver_match.url_name == 'job_edit' %}active{% endif %}" href="{% url 'job_list' %}">
+              Jobs
+            </a>
+          </li>
+        </ul>
+        
+        <ul class="navbar-nav">
+          <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown">
+              {{ user.username }}
+            </a>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="{% url 'job_create' %}">Add New Job</a></li>
+              <li><a class="dropdown-item" href="{% url 'daily_entry' %}">Add Time Entry</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li><a class="dropdown-item" href="{% url 'logout' %}">Logout</a></li>
+            </ul>
+          </li>
+        </ul>
       {% else %}
-        <a class="btn btn-primary" href="{% url 'login' %}">Login</a>
+        <ul class="navbar-nav ms-auto">
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'login' %}">Login</a>
+          </li>
+          <li class="nav-item">
+            <a class="nav-link" href="{% url 'register' %}">Register</a>
+          </li>
+        </ul>
       {% endif %}
     </div>
   </div>
 </nav>
 <div class="container">
+    {% block breadcrumbs %}{% endblock %}
+    
+    {% if messages %}
+      {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          {{ message }}
+          <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+      {% endfor %}
+    {% endif %}
+    
     {% block content %}{% endblock %}
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>

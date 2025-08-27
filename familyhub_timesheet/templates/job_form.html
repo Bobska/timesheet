@@ -1,5 +1,61 @@
 {% extends 'base.html' %}
+
+{% block title %}{% if job %}Edit Job{% else %}Create Job{% endif %} - FamilyHub Timesheet{% endblock %}
+
+{% block breadcrumbs %}
+<nav aria-label="breadcrumb">
+  <ol class="breadcrumb">
+    <li class="breadcrumb-item"><a href="{% url 'dashboard' %}">Dashboard</a></li>
+    <li class="breadcrumb-item"><a href="{% url 'job_list' %}">Jobs</a></li>
+    <li class="breadcrumb-item active">{% if job %}Edit Job{% else %}Create Job{% endif %}</li>
+  </ol>
+</nav>
+{% endblock %}
+
 {% block content %}
-<h2>{% if job %}Edit Job{% else %}Add Job{% endif %}</h2>
-<form method="post" class="card card-body mb-3">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary">{% if job %}Update{% else %}Create{% endif %} Job</button></form>
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header">
+                <h3 class="card-title mb-0">
+                    <i class="bi bi-briefcase"></i>
+                    {% if job %}Edit Job{% else %}Create New Job{% endif %}
+                </h3>
+            </div>
+            <div class="card-body">
+                <form method="post">
+                    {% csrf_token %}
+                    {{ form.as_p }}
+                    
+                    <div class="d-flex gap-2 justify-content-end">
+                        <a href="{% url 'job_list' %}" class="btn btn-secondary">
+                            <i class="bi bi-x-circle"></i> Cancel
+                        </a>
+                        <button type="submit" class="btn btn-primary">
+                            <i class="bi bi-check-circle"></i>
+                            {% if job %}Update Job{% else %}Create Job{% endif %}
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+        
+        {% if not job %}
+        <div class="card mt-4">
+            <div class="card-header">
+                <h6 class="card-title mb-0">Job Information</h6>
+            </div>
+            <div class="card-body">
+                <small class="text-muted">
+                    <ul class="mb-0">
+                        <li><strong>Name:</strong> A descriptive name for this job or project</li>
+                        <li><strong>Address:</strong> Optional client location or job site address</li>
+                        <li>You can edit this information later if needed</li>
+                    </ul>
+                </small>
+            </div>
+        </div>
+        {% endif %}
+    </div>
+</div>
 {% endblock %}
