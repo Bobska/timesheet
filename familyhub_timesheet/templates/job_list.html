@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Jobs</h2>
+<a href="{% url 'job_create' %}" class="btn btn-success mb-3">Add Job</a>
+<table class="table table-striped">
+  <thead><tr><th>Name</th><th>Address</th><th>Actions</th></tr></thead>
+  <tbody>
+    {% for job in jobs %}
+      <tr>
+        <td>{{ job.name }}</td>
+        <td>{{ job.address }}</td>
+        <td>
+          <a href="{% url 'job_edit' job.pk %}" class="btn btn-sm btn-primary">Edit</a>
+        </td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="3">No jobs found.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

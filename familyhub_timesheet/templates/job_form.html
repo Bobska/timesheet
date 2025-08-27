@@ -1,0 +1,5 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>{% if job %}Edit Job{% else %}Add Job{% endif %}</h2>
+<form method="post" class="card card-body mb-3">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary">{% if job %}Update{% else %}Create{% endif %} Job</button></form>
+{% endblock %}

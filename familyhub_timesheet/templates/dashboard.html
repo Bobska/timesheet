@@ -1,0 +1,28 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Today's Entries</h2>
+{% if messages %}
+  {% for message in messages %}
+    <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+  {% endfor %}
+{% endif %}
+<table class="table table-striped">
+  <thead><tr><th>Job</th><th>Start</th><th>End</th><th>Break</th><th>Hours</th></tr></thead>
+  <tbody>
+    {% for entry in entries %}
+      <tr>
+        <td>{{ entry.job.display_name }}</td>
+        <td>{{ entry.start_time }}</td>
+        <td>{{ entry.end_time }}</td>
+        <td>{{ entry.break_duration }} min</td>
+        <td>{{ entry.total_hours }}</td>
+      </tr>
+    {% empty %}
+      <tr><td colspan="5">No entries for today.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
+<hr>
+<h3>Quick Add Entry</h3>
+<form method="post" class="card card-body mb-3">{% csrf_token %}{{ form.as_p }}<button class="btn btn-primary">Add Entry</button></form>
+{% endblock %}

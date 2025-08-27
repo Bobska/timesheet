@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2>Weekly Summary</h2>
+<table class="table table-bordered">
+  <thead><tr><th>Date</th><th>Total Hours</th></tr></thead>
+  <tbody>
+    {% for d in week_dates %}
+      <tr>
+        <td>{{ d }}</td>
+        <td>{{ daily_totals[d] }}</td>
+      </tr>
+    {% endfor %}
+  </tbody>
+</table>
+<div class="card card-body mb-3">
+  <h4>Weekly Total: {{ weekly_total }} hours</h4>
+</div>
+{% endblock %}
