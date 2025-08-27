@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Jobs | FamilyHub Timesheet{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Job Management</h2>
+  <div>
+    <a href="{% url 'dashboard' %}" class="btn btn-sm btn-outline-secondary">Dashboard</a>
+    <a href="{% url 'job_create' %}" class="btn btn-sm btn-success">Add New Job</a>
+  </div>
+</div>
+
+<div class="row mb-3">
+  <div class="col-12">
+    <div class="card mb-3">
+      <div class="card-header d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Your Jobs</h5>
+        <span class="badge bg-primary">{{ jobs|length }} job{{ jobs|length|pluralize }}</span>
+      </div>
+      <div class="card-body">
+        {% if jobs %}
+          <div class="table-responsive">
+            <table class="table table-hover mb-0">
+              <thead class="table-light">
+                <tr><th>Name</th><th>Address</th><th>Created</th><th>Actions</th></tr>
+              </thead>
+              <tbody>
+                {% for job in jobs %}
+                  <tr>
+                    <td><strong>{{ job.name|default:"Unnamed Job" }}</strong></td>
+                    <td>{{ job.address }}</td>
+                    <td><small class="text-muted">{{ job.created_at|date:"M d, Y" }}</small></td>
+                    <td>
+                      <div class="btn-group" role="group">
+                        <a href="{% url 'job_edit' job.pk %}" class="btn btn-sm btn-primary">Edit</a>
+                        <a href="#" class="btn btn-sm btn-danger" onclick="return confirm('Delete this job?')">Delete</a>
+                      </div>
+                    </td>
+                  </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="text-center py-4">
+            <p class="text-muted mb-3">No jobs found. Create your first job to start tracking time!</p>
+            <a href="{% url 'job_create' %}" class="btn btn-success">Create Your First Job</a>
+          </div>
+        {% endif %}
+      </div>
+    </div>
+    
+    <div class="row">
+      <div class="col-md-6">
+        <div class="card">
+          <div class="card-header">
+            <h6 class="mb-0">Quick Actions</h6>
+          </div>
+          <div class="card-body">
+            <div class="d-grid gap-2">
+              <a href="{% url 'daily_entry' %}" class="btn btn-outline-primary">Add Time Entry</a>
+              <a href="{% url 'weekly_summary' %}" class="btn btn-outline-info">View Weekly Summary</a>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

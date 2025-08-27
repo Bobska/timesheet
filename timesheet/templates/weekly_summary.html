@@ -1,0 +1,73 @@
+{% extends 'base.html' %}
+{% block title %}Weekly Summary | FamilyHub Timesheet{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h2>Weekly Summary</h2>
+  <div>
+    <a href="{% url 'dashboard' %}" class="btn btn-sm btn-outline-secondary">Dashboard</a>
+    <a href="{% url 'daily_entry' %}" class="btn btn-sm btn-outline-primary">Daily Entry</a>
+  </div>
+</div>
+
+<div class="row mb-3">
+  <div class="col-12 col-lg-8">
+    <div class="card mb-3">
+      <div class="card-header">
+        <h5 class="mb-0">Week Overview</h5>
+      </div>
+      <div class="card-body">
+        <table class="table table-bordered mb-0">
+          <thead class="table-light">
+            <tr><th>Date</th><th>Day</th><th>Total Hours</th><th>Actions</th></tr>
+          </thead>
+          <tbody>
+            {% for d in week_dates %}
+              <tr>
+                <td>{{ d }}</td>
+                <td>{{ d|date:"l" }}</td>
+                <td>
+                  <span class="badge bg-{% if daily_totals[d] > 8 %}success{% elif daily_totals[d] > 0 %}primary{% else %}secondary{% endif %}">
+                    {{ daily_totals[d]|default:0 }}h
+                  </span>
+                </td>
+                <td>
+                  <a href="{% url 'daily_entry' %}?date={{ d }}" class="btn btn-sm btn-outline-primary">View Day</a>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+  
+  <div class="col-12 col-lg-4">
+    <div class="card mb-3">
+      <div class="card-header">
+        <h5 class="mb-0">Weekly Total</h5>
+      </div>
+      <div class="card-body text-center">
+        <h2 class="text-primary">{{ weekly_total }} hours</h2>
+        <p class="text-muted">Total for this week</p>
+        <hr>
+        <div class="d-grid gap-2">
+          <a href="{% url 'daily_entry' %}" class="btn btn-primary">Add Time Entry</a>
+          <a href="{% url 'job_list' %}" class="btn btn-outline-secondary">Manage Jobs</a>
+        </div>
+      </div>
+    </div>
+    
+    <div class="card">
+      <div class="card-header">
+        <h6 class="mb-0">Quick Actions</h6>
+      </div>
+      <div class="card-body">
+        <div class="d-grid gap-2">
+          <a href="{% url 'job_create' %}" class="btn btn-sm btn-success">Add New Job</a>
+          <a href="{% url 'dashboard' %}" class="btn btn-sm btn-outline-info">Back to Dashboard</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
