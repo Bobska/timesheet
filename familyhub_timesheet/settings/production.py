@@ -1,11 +1,14 @@
 """
 Production Django settings for familyhub_timesheet project.
-This file contains production-specific settings including SQL Server configuration.
+This file contains comprehensive SQL Server configuration with debugging and retry logic.
 """
 
 import os
+import logging
+import structlog
 from decouple import config
 from .base import *
+from tenacity import retry, stop_after_attempt, wait_exponential, retry_if_exception_type
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me-in-production')
@@ -14,23 +17,104 @@ SECRET_KEY = config('SECRET_KEY', default='django-insecure-change-me-in-producti
 DEBUG = config('DEBUG', default=False, cast=bool)
 
 # Allowed hosts
-ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,0.0.0.0').split(',')
+ALLOWED_HOSTS = config('ALLOWED_HOSTS', default='localhost,127.0.0.1,0.0.0.0,*').split(',')
 
-# Database configuration for SQL Server
+# Enhanced Logging Configuration
+LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'verbose': {
+            'format': '{levelname} {asctime} {module} {process:d} {thread:d} {message}',
+            'style': '{',
+        },
+        'simple': {
+            'format': '{levelname} {message}',
+            'style': '{',
+        },
+        'json': {
+            '()': structlog.stdlib.ProcessorFormatter,
+            'processor': structlog.dev.ConsoleRenderer(colors=False),
+        },
+    },
+    'handlers': {
+        'console': {
+            'level': 'INFO',
+            'class': 'logging.StreamHandler',
+            'formatter': 'verbose',
+        },
+        'db_file': {
+            'level': 'DEBUG',
+            'class': 'logging.FileHandler',
+            'filename': '/app/logs/database.log',
+            'formatter': 'json',
+        },
+    },
+    'loggers': {
+        'django.db.backends': {
+            'handlers': ['console', 'db_file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'mssql': {
+            'handlers': ['console', 'db_file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'pyodbc': {
+            'handlers': ['console', 'db_file'],
+            'level': 'DEBUG',
+            'propagate': False,
+        },
+        'familyhub_timesheet': {
+            'handlers': ['console'],
+            'level': 'INFO',
+            'propagate': False,
+        },
+    },
+    'root': {
+        'handlers': ['console'],
+        'level': 'INFO',
+    },
+}
+
+# Database Configuration with Enhanced SQL Server Support
 DATABASES = {
     'default': {
         'ENGINE': 'mssql',
         'NAME': config('DATABASE_NAME', default='timesheet_prod'),
         'USER': config('DATABASE_USER', default='sa'),
-        'PASSWORD': config('DATABASE_PASSWORD'),
+        'PASSWORD': config('DATABASE_PASSWORD', default='YourStrong!Passw0rd'),
         'HOST': config('DATABASE_HOST', default='db'),
         'PORT': config('DATABASE_PORT', default='1433'),
         'OPTIONS': {
             'driver': 'ODBC Driver 18 for SQL Server',
-            'extra_params': 'TrustServerCertificate=yes',
+            'extra_params': ';'.join([
+                'TrustServerCertificate=yes',
+                'Encrypt=no',  # For local development
+                'Connection Timeout=30',
+                'Command Timeout=60',
+                'Login Timeout=30',
+                'MultipleActiveResultSets=True',
+                'ApplicationIntent=ReadWrite',
+                'ConnectRetryCount=3',
+                'ConnectRetryInterval=10',
+            ]),
         },
+        'CONN_MAX_AGE': 600,  # Connection pooling - 10 minutes
+        'CONN_HEALTH_CHECKS': True,
+        'AUTOCOMMIT': True,
     }
 }
+
+# Fallback Database Configuration (SQLite for emergencies)
+ENABLE_DATABASE_FALLBACK = config('ENABLE_DATABASE_FALLBACK', default=True, cast=bool)
+
+if ENABLE_DATABASE_FALLBACK:
+    DATABASES['sqlite_fallback'] = {
+        'ENGINE': 'django.db.backends.sqlite3',
+        'NAME': '/app/data/db_fallback.sqlite3',
+    }
 
 # Security settings for production
 SECURE_BROWSER_XSS_FILTER = True

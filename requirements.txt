@@ -1,6 +1,11 @@
 # Django and core dependencies
 Django>=5.0,<6.0
 
+# SQL Server database drivers and utilities
+mssql-django>=1.4.0
+pyodbc>=4.0.39
+django-mssql-backend>=2.8.1
+
 # Production server
 gunicorn>=21.0.0
 
@@ -9,6 +14,19 @@ whitenoise>=6.5.0
 
 # Configuration management
 python-decouple>=3.8
+django-environ>=0.11.0
 
 # Security and utilities
 django-cors-headers>=4.3.0
+
+# Database utilities and monitoring
+django-extensions>=3.2.0
+sqlparse>=0.4.4
+
+# Debugging and logging (production-safe)
+structlog>=23.1.0
+django-structlog>=5.0.0
+
+# Connection and retry utilities
+tenacity>=8.2.0
+psutil>=5.9.0
